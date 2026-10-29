@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10271f">
+  <meta name="description" content="Local-first smart beehive monitoring for BeeBot.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/beebot-192.png">
+  <link rel="apple-touch-icon" href="icons/beebot-192.png">
+  <title>BeeBot Connect</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark">🐝</div>
+    <div class="brand-copy"><strong>BeeBot <span>Connect</span></strong><small>SMART BEEHIVE MONITORING</small></div>
+    <div class="status"><i id="connectionDot"></i><span id="connectionText">Demo mode</span></div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav active" data-page="overview">▦ <span>Overview</span></button>
+      <button class="nav" data-page="history">⌁ <span>History & charts</span></button>
+      <button class="nav" data-page="camera">▣ <span>Live camera</span></button>
+      <button class="nav" data-page="alerts">♧ <span>Alerts</span><b id="alertBadge">0</b></button>
+      <div class="side-label settings-label">DEVICE</div>
+      <button class="nav" data-page="settings">⚙ <span>Connection settings</span></button>
+      <div class="sidebar-note"><span class="pulse"></span> Local-first monitoring<br><small>Your data stays on your network/browser.</small></div>
+    </aside>
+
+    <section class="content">
+      <div class="page-head">
+        <div><p class="eyebrow">BEEHIVE CONTROL CENTER</p><h1 id="pageTitle">Hive overview</h1><p class="subhead" id="pageSubtitle">A live snapshot of your colony environment.</p></div>
+        <div class="head-actions"><span class="time-chip" id="lastUpdated">Waiting for readings</span><button class="button ghost" id="installApp" hidden>Install app</button><button class="button ghost" id="demoToggle">Demo data: ON</button></div>
+      </div>
+
+      <div id="overviewPage" class="page">
+        <div class="banner">
+          <div class="banner-icon">✦</div><div><strong id="hiveCondition">Demo readings active</strong><p id="hiveMessage">Connect your ESP32 to replace sample values with real sensor data.</p></div>
+          <span class="banner-pill" id="statusPill">PREVIEW</span>
+        </div>
+        <div class="section-heading"><h2>Current readings</h2><span>Updates when data arrives</span></div>
+        <div class="metrics">
+          <article class="metric-card"><div class="metric-top"><span>Inside temperature</span><span class="metric-icon orange">♨</span></div><div class="metric-value"><span id="insideTemp">--</span><small>°C</small></div><div class="metric-foot"><span class="dot orange-bg"></span> DHT22 · Inside</div></article>
+          <article class="metric-card"><div class="metric-top"><span>Inside humidity</span><span class="metric-icon blue">◌</span></div><div class="metric-value"><span id="insideHumidity">--</span><small>%</small></div><div class="metric-foot"><span class="dot blue-bg"></span> DHT22 · Inside</div></article>
+          <article class="metric-card"><div class="metric-top"><span>Outside temperature</span><span class="metric-icon orange">☼</span></div><div class="metric-value"><span id="outsideTemp">--</span><small>°C</small></div><div class="metric-foot"><span class="dot orange-bg"></span> DHT22 · Outside</div></article>
+          <article class="metric-card"><div class="metric-top"><span>Outside humidity</span><span class="metric-icon blue">◌</span></div><div class="metric-value"><span id="outsideHumidity">--</span><small>%</small></div><div class="metric-foot"><span class="dot blue-bg"></span> DHT22 · Outside</div></article>
+          <article class="metric-card"><div class="metric-top"><span>Hive weight</span><span class="metric-icon green">⚖</span></div><div class="metric-value"><span id="weight">--</span><small>kg</small></div><div class="metric-foot"><span class="dot green-bg"></span> HX711 load cell</div></article>
+          <article class="metric-card"><div class="metric-top"><span>Bee sound level</span><span class="metric-icon purple">〰</span></div><div class="metric-value sound-value"><span id="soundDb">--</span><small>dBFS</small></div><div class="metric-foot"><span class="dot purple-bg"></span> INMP441 · <b id="soundState">UNKNOWN</b></div></article>
+        </div>
+
+        <div class="lower-grid">
+          <article class="panel chart-panel"><div class="panel-head"><div><h2>Hive trends</h2><p>Recent temperature readings</p></div><select id="overviewChartMetric"><option value="insideTemp">Inside temperature</option><option value="insideHumidity">Inside humidity</option><option value="weight">Hive weight</option></select></div><canvas id="overviewChart" height="170" aria-label="Recent readings chart"></canvas><div class="chart-legend"><span><i class="legend-line"></i><span id="overviewLegend">Inside temperature</span></span><span id="chartPointCount">0 samples</span></div></article>
+          <article class="panel"><div class="panel-head"><div><h2>Hive equipment</h2><p>Reported status</p></div><span class="small-tag">DEVICE</span></div><div class="equipment-row"><span class="equipment-icon">⇧</span><div class="equipment-copy"><strong>Ventilation servo</strong><small id="servoDetail">Waiting for device</small></div><span class="state-tag" id="servoState">UNKNOWN</span></div><div class="equipment-row"><span class="equipment-icon">⌁</span><div class="equipment-copy"><strong>Sound classification</strong><small>Based on your ESP32 firmware</small></div><span class="state-tag" id="soundTag">UNKNOWN</span></div><div class="equipment-row"><span class="equipment-icon">◉</span><div class="equipment-copy"><strong>Sensor connection</strong><small id="sensorDetail">No device data yet</small></div><span class="state-tag" id="sensorState">WAITING</span></div><div class="panel-foot">App status is informational; keep safety-critical ventilation control on the ESP32.</div></article>
+        </div>
+      </div>
+
+      <div id="historyPage" class="page hidden">
+        <div class="section-heading"><h2>Reading history</h2><span>Stored in this browser on this device</span></div>
+        <article class="panel history-panel"><div class="panel-head"><div><h2>Trend explorer</h2><p>Choose a measurement to inspect its recent values.</p></div><select id="historyMetric"><option value="insideTemp">Inside temperature (°C)</option><option value="outsideTemp">Outside temperature (°C)</option><option value="insideHumidity">Inside humidity (%)</option><option value="outsideHumidity">Outside humidity (%)</option><option value="weight">Hive weight (kg)</option><option value="soundDb">Sound level (dBFS)</option></select></div><canvas id="historyChart" height="260"></canvas><div class="history-summary" id="historySummary">No readings yet.</div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Inside °C</th><th>Inside %</th><th>Outside °C</th><th>Outside %</th><th>Weight kg</th><th>Sound</th></tr></thead><tbody id="historyRows"><tr><td colspan="7">Waiting for sensor data…</td></tr></tbody></table></div><div class="history-actions"><button class="button primary" id="exportCsv">Export CSV</button><button class="button ghost" id="clearHistory">Clear local history</button></div></article>
+      </div>
+
+      <div id="cameraPage" class="page hidden">
+        <div class="section-heading"><h2>Live camera</h2><span>Local network stream</span></div>
+        <article class="panel camera-panel"><div class="camera-frame" id="cameraFrame"><div class="camera-placeholder"><div class="camera-symbol">▣</div><h3>Hive camera preview</h3><p>Enter your camera's local stream URL in Connection settings.</p><small>For example, the URL shown by your camera firmware.</small></div><img id="cameraImage" alt="Live beehive camera feed" class="hidden"></div><div class="camera-controls"><div><strong id="cameraStatus">Camera not configured</strong><p>Camera must be connected to the same Wi-Fi network.</p></div><button class="button primary" id="reloadCamera">Reload stream</button></div><div class="notice">The camera feed is separate from the sensor WebSocket. This page supports browser-viewable HTTP image/MJPEG streams; some camera firmware serves video in a different format.</div></article>
+      </div>
+
+      <div id="alertsPage" class="page hidden">
+        <div class="section-heading"><h2>Alerts & events</h2><span>Local browser alerts</span></div>
+        <div class="banner alert-banner"><div class="banner-icon">!</div><div><strong>Review your alert thresholds</strong><p>Initial thresholds are examples. Set safe values for your hive and local conditions.</p></div></div>
+        <article class="panel"><div class="panel-head"><div><h2>Thresholds</h2><p>Alerts are generated when a new reading arrives.</p></div></div><div class="threshold-grid"><label>High inside temperature (°C)<input id="tempThreshold" type="number" value="36" step="0.5"></label><label>Low inside temperature (°C)<input id="lowTempThreshold" type="number" value="10" step="0.5"></label><label>High inside humidity (%)<input id="humidityThreshold" type="number" value="85" step="1"></label><label>Unexpected weight change (kg)<input id="weightThreshold" type="number" value="1.5" step="0.1" min="0"></label></div><div class="history-actions"><button class="button primary" id="saveThresholds">Save thresholds</button><button class="button ghost" id="requestNotifications">Enable browser notifications</button></div></article>
+        <article class="panel event-panel"><div class="panel-head"><div><h2>Recent events</h2><button class="text-button" id="clearAlerts">Clear events</button></div></div><div id="alertList" class="alert-list"><div class="empty-state">No alerts yet. Events will appear here when readings cross a threshold.</div></div></article>
+      </div>
+
+      <div id="settingsPage" class="page hidden">
+        <div class="section-heading"><h2>Connection settings</h2><span>Configure your local devices</span></div>
+        <article class="panel settings-panel"><div class="panel-head"><div><h2>ESP32 connection</h2><p>Enter the ESP32's IP address on your Wi-Fi network.</p></div></div><label class="field-label" for="deviceHost">ESP32 host or IP address</label><input id="deviceHost" class="text-input" placeholder="e.g. 192.168.1.50" autocomplete="url"><p class="help-text">Use the IP shown by your ESP32 serial monitor/router. The app will connect to <code>ws://HOST/ws</code>.</p><label class="field-label" for="cameraUrl">Camera stream URL (optional)</label><input id="cameraUrl" class="text-input" placeholder="e.g. http://192.168.1.51:81/stream"><p class="help-text">Use the exact stream URL supported by your camera firmware. The camera may have its own IP address.</p><div class="settings-actions"><button class="button primary" id="connectDevice">Save & connect</button><button class="button ghost" id="disconnectDevice">Disconnect</button></div><div class="notice"><strong>Protocol expected:</strong> the ESP32 sends one JSON object per WebSocket message. See <code>README.md</code> for the data format and firmware integration steps.</div></article>
+        <article class="panel"><div class="panel-head"><div><h2>Privacy & storage</h2><p>Designed for local Wi-Fi use.</p></div></div><div class="privacy-row"><span>Reading history</span><b>Saved in this browser</b></div><div class="privacy-row"><span>Cloud account</span><b>Not required</b></div><div class="privacy-row"><span>Cross-device history</span><b>Needs local server</b></div></article>
+      </div>
+      <footer>BeeBot Connect <span>•</span> Local-first hive monitoring <span>•</span> Prototype v0.1</footer>
+    </section>
+  </main>
+  <div id="toast" role="status" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>

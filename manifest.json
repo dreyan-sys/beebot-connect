@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "BeeBot Connect — Smart Beehive Monitoring",
+  "short_name": "BeeBot",
+  "description": "Monitor BeeBot hive temperature, humidity, weight, sound, and ventilation status.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f8f5",
+  "theme_color": "#10271f",
+  "icons": [
+    { "src": "icons/beebot-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/beebot-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
