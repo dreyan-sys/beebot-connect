@@ -395,3 +395,22 @@ if (connectButton) {
 // =====================================================
 
 console.log("BeeBot Connect Firebase integration initialized.");
+
+// Register BeeBot Connect service worker
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then((registration) => {
+        console.log(
+          "BeeBot service worker registered:",
+          registration.scope
+        );
+      })
+      .catch((error) => {
+        console.error(
+          "Service worker registration failed:",
+          error
+        );
+      });
+  });
+}
