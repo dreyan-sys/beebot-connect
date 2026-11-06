@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BeeBot Connect</title>
+
+    <meta name="theme-color" content="#f3f8ef">
+    <meta name="description" content="BeeBot Smart Beehive Monitoring Dashboard">
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="logo">🐝</div>
+            <div>
+                <h2>BeeBot</h2>
+                <small>Connect</small>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#" class="active">🏠 Dashboard</a>
+            <a href="#analytics">📊 Analytics</a>
+            <a href="#history">📈 History</a>
+            <a href="#alerts">🔔 Alerts</a>
+            <a href="#camera">📷 Camera</a>
+        </nav>
+
+        <div class="sidebar-status">
+            <span class="status-dot"></span>
+            <strong id="sidebarStatus">BeeBot Offline</strong>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div>
+                <h2>Beehive Monitoring</h2>
+                <p>Smart Sustainable Beehive System</p>
+            </div>
+
+            <div>
+                <span id="connectionBadge">DISCONNECTED</span>
+            </div>
+        </header>
+
+
+        <!-- WELCOME -->
+        <section class="welcome">
+            <h1>Welcome to BeeBot Connect! 🐝</h1>
+            <p>Monitor your beehive conditions in real time.</p>
+        </section>
+
+
+        <!-- FIREBASE LOGIN -->
+        <section class="panel" id="firebaseLogin">
+
+            <h3>Firebase Viewer Login</h3>
+
+            <p>Sign in to access your live beehive readings.</p>
+
+            <form id="firebaseLoginForm">
+
+                <input
+                    type="email"
+                    id="firebaseEmail"
+                    placeholder="Viewer email"
+                    autocomplete="username"
+                    required
+                >
+
+                <input
+                    type="password"
+                    id="firebasePassword"
+                    placeholder="Viewer password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button type="submit" id="firebaseLoginButton">
+                    Sign In
+                </button>
+
+            </form>
+
+            <p id="loginMessage" aria-live="polite"></p>
+
+        </section>
+
+
+        <!-- CONNECTION CONTROLS -->
+        <section class="panel connection-controls">
+
+            <h3>Device Connection</h3>
+
+            <div class="connection-input">
+
+                <input
+                    type="text"
+                    id="espIP"
+                    value="172.20.10.2"
+                    placeholder="ESP32 IP Address"
+                >
+
+                <button id="connectButton" type="button">
+                    Connect
+                </button>
+
+            </div>
+
+            <p id="connectionStatus">Not connected</p>
+
+        </section>
+
+
+        <!-- SENSOR READINGS -->
+        <section class="sensor-section">
+
+            <div class="section-heading">
+                <h2>Live Sensor Readings</h2>
+                <span id="lastUpdated">Waiting for data...</span>
+            </div>
+
+            <div class="sensor-grid">
+
+                <!-- INSIDE TEMPERATURE -->
+                <div class="sensor-card">
+                    <div class="sensor-icon">🌡️</div>
+                    <h3>Inside Temperature</h3>
+                    <div class="reading">
+                        <strong id="insideTemp">--</strong>
+                        <span>°C</span>
+                    </div>
+                </div>
+
+
+                <!-- OUTSIDE TEMPERATURE -->
+                <div class="sensor-card">
+                    <div class="sensor-icon">☀️</div>
+                    <h3>Outside Temperature</h3>
+                    <div class="reading">
+                        <strong id="outsideTemp">--</strong>
+                        <span>°C</span>
+                    </div>
+                </div>
+
+
+                <!-- INSIDE HUMIDITY -->
+                <div class="sensor-card">
+                    <div class="sensor-icon">💧</div>
+                    <h3>Inside Humidity</h3>
+                    <div class="reading">
+                        <strong id="insideHumidity">--</strong>
+                        <span>%</span>
+                    </div>
+                </div>
+
+
+                <!-- OUTSIDE HUMIDITY -->
+                <div class="sensor-card">
+                    <div class="sensor-icon">🌧️</div>
+                    <h3>Outside Humidity</h3>
+                    <div class="reading">
+                        <strong id="outsideHumidity">--</strong>
+                        <span>%</span>
+                    </div>
+                </div>
+
+
+                <!-- HIVE WEIGHT -->
+                <div class="sensor-card">
+                    <div class="sensor-icon">⚖️</div>
+                    <h3>Hive Weight</h3>
+                    <div class="reading">
+                        <strong id="weight">--</strong>
+                        <span>kg</span>
+                    </div>
+                </div>
+
+
+                <!-- SOUND LEVEL -->
+                <div class="sensor-card">
+                    <div class="sensor-icon">🔊</div>
+                    <h3>Sound Level</h3>
+                    <div class="reading">
+                        <strong id="soundDb">--</strong>
+                        <span>dBFS</span>
+                    </div>
+                    <p id="soundState">Waiting...</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- BOTTOM DASHBOARD -->
+        <section class="bottom-grid">
+
+            <!-- SERVO STATUS -->
+            <div class="panel">
+
+                <h3>Ventilation System</h3>
+
+                <div class="servo-reading">
+                    <strong id="servoAngle">--</strong>
+                    <span>°</span>
+                </div>
+
+                <p id="servoStatus">Waiting for device...</p>
+
+            </div>
+
+
+            <!-- DEVICE STATUS -->
+            <div class="panel">
+
+                <h3>Device Information</h3>
+
+                <div class="info-row">
+                    <span>Device</span>
+                    <strong>BeeBot ESP32</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Connection</span>
+                    <strong id="deviceStatus">Offline</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Data Source</span>
+                    <strong id="dataSource">Waiting...</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FUTURE SECTIONS -->
+        <section class="panel" id="analytics">
+            <h3>Analytics</h3>
+            <p>Sensor graphs and historical analysis will be added here.</p>
+        </section>
+
+        <section class="panel" id="history">
+            <h3>History</h3>
+            <p>Historical hive readings will be displayed here.</p>
+        </section>
+
+        <section class="panel" id="alerts">
+            <h3>Alerts</h3>
+            <p>Beehive alerts will be displayed here.</p>
+        </section>
+
+        <section class="panel" id="camera">
+            <h3>Live Camera</h3>
+            <p>ESP32-CAM integration will be added here.</p>
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer>
+            <p>BeeBot Connect | Smart Sustainable Beehive Monitoring</p>
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- FIREBASE INTEGRATION -->
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
